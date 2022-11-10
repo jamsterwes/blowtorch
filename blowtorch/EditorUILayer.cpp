@@ -67,8 +67,10 @@ void EditorUILayer::DrawEffects(ImVec2& displaySize)
 	ImGui::Text("Effects");
 	ImGui::BeginListBox("", { displaySize.x * 0.2f, -10.0f });
 
-	for (int e = 0; e < _effects.size(); e++)
+	for (std::vector<std::string>::iterator it = _effects.begin(); it != _effects.end(); ++it)
 	{
+		if (_effects.size() == 0) break;
+
 		ImGui::BeginChild("EffectButton");
 		ImGui::Columns(4);
 		// 52.5% | 12.5% | 12.5% | 12.5%
@@ -77,7 +79,7 @@ void EditorUILayer::DrawEffects(ImVec2& displaySize)
 		ImGui::SetColumnWidth(2, ImGui::GetWindowSize().x * 0.125);
 		ImGui::SetColumnWidth(3, ImGui::GetWindowSize().x * 0.125);
 		// Effect Name / Button
-		ImGui::Selectable(_effects[e].c_str());
+		ImGui::Selectable((*it).c_str());
 		ImGui::NextColumn();
 		// Move Effect Up
 		ImGui::ArrowButton("MoveEffectUp", ImGuiDir_Up);
@@ -86,7 +88,10 @@ void EditorUILayer::DrawEffects(ImVec2& displaySize)
 		ImGui::ArrowButton("MoveEffectDown", ImGuiDir_Down);
 		ImGui::NextColumn();
 		// Remove Effect
-		ImGui::Button("X");
+		if (ImGui::Button("X"))
+		{
+			_effects.erase(it);
+		}
 		ImGui::EndChild();
 	}
 
