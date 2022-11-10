@@ -1,6 +1,10 @@
 // STDLIB
 #include <iostream>
 
+// Windows
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
 // OpenGL
 #include <gl/glew.h>
 
@@ -12,16 +16,49 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-float bgColor[3] = { 0.5f, 0.5f, 0.5f };
-
-void RenderGUI()
+void RenderGUI(int width, int height)
 {
-	ImGui::Begin("Test Window");
-	ImGui::ColorPicker3("Background Color", bgColor);
+	auto& displaySize = ImGui::GetIO().DisplaySize;
+
+	// DRAW FULL-SCREEN WINDOW
+	ImGui::SetNextWindowSize(displaySize);
+	ImGui::SetNextWindowPos({ 0, 0 });
+	ImGui::Begin("X", nullptr, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDecoration);
+
+	// DRAW MENU BAR
+	ImGui::BeginMenuBar();
+
+	if (ImGui::BeginMenu("File"))
+	{
+		if (ImGui::MenuItem("Open Image"))
+		{
+			// Open Image
+			// TODO: open file prompt
+		}
+		ImGui::EndMenu();
+	}
+	ImGui::EndMenuBar();
+
+	// DRAW TAB BAR
+	ImGui::BeginChild("Tabs", { displaySize.x * 0.8f, 0 });
+	ImGui::BeginTabBar("tabs0");
+	ImGui::BeginTabItem("image0.png");
+
+	ImGui::EndTabItem();
+	ImGui::EndTabBar();
+	ImGui::EndChild();
+
+	// DRAW EDITOR PANE (20% width);
+	ImGui::BeginChild("Editor Pane", { displaySize.x * 0.2f, 0 });
+	ImGui::Begin("Editor Pane", nullptr, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+	ImGui::RadioButton("Something", true);
+	ImGui::End();
+	ImGui::EndChild();
+
 	ImGui::End();
 }
 
-int main()
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
 	// Init GLFW
 	if (!glfwInit())
@@ -35,7 +72,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 
 	// Make GLFW window
-	GLFWwindow* window = glfwCreateWindow(800, 600, "blowtorch", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(1280, 1024, "blowtorch", nullptr, nullptr);
 
 	// VSync
 	glfwSwapInterval(1);
@@ -64,7 +101,7 @@ int main()
 	while (!glfwWindowShouldClose(window))
 	{
 		// Set background color
-		glClearColor(bgColor[0], bgColor[1], bgColor[2], 1.0f);
+		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Start a new UI frame for IMGUI
@@ -73,7 +110,7 @@ int main()
 		ImGui::NewFrame();
 
 		// Render GUI objects
-		RenderGUI();
+		RenderGUI(width, height);
 
 		// Render IMGUI frame
 		ImGui::EndFrame();
