@@ -10,11 +10,12 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "imgui/imgui_fonts.h"
 
-const size_t effectCount = 3;
+const size_t effectCount = 4;
 const char* effectNames[effectCount] = {
-	"Hue Shift",
-	"Pixelate",
-	"Bitshift"
+	ICON_FA_SPINNER " Hue Shift",
+	ICON_FA_CUBES " Pixelate",
+	ICON_FA_CODE " Bitshift",
+	ICON_FA_PAINT_BRUSH " Repaint"
 };
 bool isBkgColorEditorOpen = false;
 
@@ -41,7 +42,7 @@ void EditorUILayer::DrawMenuBar()
 	ImGui::BeginMenuBar();
 	if (ImGui::BeginMenu("File"))
 	{
-		if (ImGui::MenuItem("Open Image"))
+		if (ImGui::MenuItem(ICON_FA_FOLDER_OPEN_O " Open Image"))
 		{
 			// Open Image
 			// TODO: open file prompt
@@ -68,7 +69,7 @@ void EditorUILayer::DrawEditor()
 
 void EditorUILayer::DrawEffects(ImVec2& displaySize)
 {
-	if (ImGui::BeginCombo("##", "Add Effect"))
+	if (ImGui::BeginCombo("##", ICON_FA_PLUS " Add Effect"))
 	{
 		for (int i = 0; i < effectCount; i++)
 		{
@@ -80,7 +81,7 @@ void EditorUILayer::DrawEffects(ImVec2& displaySize)
 		ImGui::EndCombo();
 	}
 	ImGui::Separator();
-	ImGui::Text("Effects");
+	ImGui::Text(ICON_FA_MAGIC " Effects");
 	ImGui::BeginListBox("##", { displaySize.x * 0.2f, -10.0f });
 
 	for (std::vector<std::string>::iterator it = _effects.begin(); it != _effects.end(); ++it)
