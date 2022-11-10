@@ -60,7 +60,7 @@ void EditorUILayer::DrawEditor()
 
 void EditorUILayer::DrawEffects(ImVec2& displaySize)
 {
-	if (ImGui::BeginCombo("", "Add Effect"))
+	if (ImGui::BeginCombo("##", "Add Effect"))
 	{
 		for (int i = 0; i < effectCount; i++)
 		{
@@ -118,7 +118,7 @@ void EditorUILayer::RenderGUI()
 	// DRAW FULL-SCREEN WINDOW
 	ImGui::SetNextWindowSize(displaySize);
 	ImGui::SetNextWindowPos({ 0, 0 });
-	ImGui::Begin("", nullptr, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDecoration);
+	ImGui::Begin("##", nullptr, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDecoration);
 
 	// DRAW MENU BAR
 	DrawMenuBar();
