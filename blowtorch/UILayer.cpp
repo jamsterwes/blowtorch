@@ -7,6 +7,7 @@
 #include <imgui.h>
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
+#include "imgui/imgui_fonts.h"
 
 // Initialization
 UILayer::UILayer(GLFWwindow* window)
@@ -22,6 +23,13 @@ UILayer::UILayer(GLFWwindow* window)
 	// Load OpenSans font
 	ImGuiIO& io = ImGui::GetIO();
 	io.Fonts->AddFontFromFileTTF("OpenSans-Regular.ttf", 18.0f);
+
+	// Load Icon font (https://github.com/ocornut/imgui/issues/1096)
+	static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	ImFontConfig icons_config;
+	icons_config.MergeMode = true;
+	icons_config.PixelSnapH = true;
+	io.Fonts->AddFontFromFileTTF("FontAwesome.ttf", 18.0f, &icons_config, icons_ranges);
 }
 
 UILayer::~UILayer()

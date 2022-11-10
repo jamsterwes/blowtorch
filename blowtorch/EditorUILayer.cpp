@@ -8,6 +8,7 @@
 #include <imgui.h>
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
+#include "imgui/imgui_fonts.h"
 
 const size_t effectCount = 3;
 const char* effectNames[effectCount] = {
@@ -45,12 +46,12 @@ void EditorUILayer::DrawMenuBar()
 void EditorUILayer::DrawEditor()
 {
 	ImGui::BeginTabBar("EditorTabs");
-	if (ImGui::BeginTabItem("cowboy_sunglasses.png*"))
+	if (ImGui::BeginTabItem(ICON_FA_PICTURE_O " cowboy_sunglasses.png*"))
 	{
 		ImGui::Image((void*)_preview, { 512, 512 });
 		ImGui::EndTabItem();
 	}
-	if (ImGui::BeginTabItem("WIN_20220828_22_03_08_Pro.jpg"))
+	if (ImGui::BeginTabItem(ICON_FA_PICTURE_O " WIN_20220828_22_03_08_Pro.jpg"))
 	{
 		ImGui::EndTabItem();
 	}
@@ -95,7 +96,7 @@ void EditorUILayer::DrawEffects(ImVec2& displaySize)
 		ImGui::ArrowButton("MoveEffectDown", ImGuiDir_Down);
 		ImGui::NextColumn();
 		// Remove Effect
-		if (ImGui::Button("X"))
+		if (ImGui::Button(ICON_FA_TIMES))
 		{
 			_effects.erase(it);
 		}

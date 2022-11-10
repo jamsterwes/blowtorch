@@ -59,5 +59,8 @@
     <ClInclude Include="PreviewLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="imgui\imgui_fonts.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
