@@ -73,7 +73,7 @@ void EditorUILayer::DrawEffects(ImVec2& displaySize)
 	}
 	ImGui::Separator();
 	ImGui::Text("Effects");
-	ImGui::BeginListBox("", { displaySize.x * 0.2f, -10.0f });
+	ImGui::BeginListBox("##", { displaySize.x * 0.2f, -10.0f });
 
 	for (std::vector<std::string>::iterator it = _effects.begin(); it != _effects.end(); ++it)
 	{
