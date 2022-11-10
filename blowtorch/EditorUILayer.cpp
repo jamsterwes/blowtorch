@@ -1,4 +1,5 @@
 #include "EditorUILayer.h"
+#include "PreviewLayer.h"
 
 // GLFW
 #include <GLFW/glfw3.h>
@@ -15,10 +16,15 @@ const char* effectNames[effectCount] = {
 	"Bitshift"
 };
 
-EditorUILayer::EditorUILayer(GLFWwindow* window) : UILayer(window), _effects() {}
+EditorUILayer::EditorUILayer(GLFWwindow* window) : UILayer(window), _effects(), _preview(0) {}
 EditorUILayer::~EditorUILayer()
 {
 
+}
+
+void EditorUILayer::AttachPreviewLayer(PreviewLayer* prevLayer)
+{
+	_preview = prevLayer->GetTextureID();
 }
 
 void EditorUILayer::DrawMenuBar()
@@ -41,6 +47,7 @@ void EditorUILayer::DrawEditor()
 	ImGui::BeginTabBar("EditorTabs");
 	if (ImGui::BeginTabItem("cowboy_sunglasses.png*"))
 	{
+		ImGui::Image((void*)_preview, { 512, 512 });
 		ImGui::EndTabItem();
 	}
 	if (ImGui::BeginTabItem("WIN_20220828_22_03_08_Pro.jpg"))

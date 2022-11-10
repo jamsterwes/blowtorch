@@ -7,13 +7,14 @@
 #include <Windows.h>
 
 // OpenGL
-#include <gl/glew.h>
+#include <glad/glad.h>
 
 // GLFW
 #include <GLFW/glfw3.h>
 
 // GUI
 #include "EditorUILayer.h"
+#include "PreviewLayer.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
@@ -34,12 +35,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	// VSync
 	glfwSwapInterval(1);
 
-	// Init GLEW
-	if (!glewInit())
-	{
-		std::cerr << "ERROR: Failed to initialize GLEW" << std::endl;
-	}
+	// Init GLAD
 	glfwMakeContextCurrent(window);
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+		std::cerr << "Failed to load GLAD" << std::endl;
+	}
 
 	// Set GL viewport
 	int width, height;
@@ -49,6 +49,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	// Init EditorUILayer
 	EditorUILayer* euiLayer = new EditorUILayer(window);
 
+	// Init PreviewLayer
+	PreviewLayer* prevLayer = new PreviewLayer(window, 512, 512);
+	euiLayer->AttachPreviewLayer(prevLayer);
+
 	// Render loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -56,6 +60,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		prevLayer->Render();
 		euiLayer->Render();
 
 		glfwSwapBuffers(window);
