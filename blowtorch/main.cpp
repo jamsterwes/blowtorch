@@ -1,5 +1,6 @@
 // STDLIB
 #include <iostream>
+#include <vector>
 
 // Windows
 #define WIN32_LEAN_AND_MEAN
@@ -15,6 +16,20 @@
 #include <imgui.h>
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
+
+const size_t effectCount = 3;
+const char* effectNames[effectCount] = {
+	"Hue Shift",
+	"Pixelate",
+	"Bitshift"
+};
+
+std::vector<std::string> effects{};
+
+void AddEffect(int idx)
+{
+	effects.push_back(effectNames[idx]);
+}
 
 void RenderGUI(int width, int height)
 {
@@ -39,20 +54,54 @@ void RenderGUI(int width, int height)
 	}
 	ImGui::EndMenuBar();
 
-	// DRAW TAB BAR
-	ImGui::BeginChild("Tabs", { displaySize.x * 0.8f, 0 });
-	ImGui::BeginTabBar("tabs0");
-	ImGui::BeginTabItem("image0.png");
+	// Draw Editor + Effects
+	ImGui::BeginChild("MainContent", { 0, 0 });
+	ImGui::SetNextWindowSize(ImGui::GetWindowSize());
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(0, displaySize.x * 0.8f);
+	ImGui::SetColumnWidth(1, displaySize.x * 0.2f);
+	{
+		ImGui::BeginTabBar("EditorTabs");
+		ImGui::BeginTabItem("cowboy_sunglasses.png*");
 
-	ImGui::EndTabItem();
-	ImGui::EndTabBar();
-	ImGui::EndChild();
 
-	// DRAW EDITOR PANE (20% width);
-	ImGui::BeginChild("Editor Pane", { displaySize.x * 0.2f, 0 });
-	ImGui::Begin("Editor Pane", nullptr, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
-	ImGui::RadioButton("Something", true);
-	ImGui::End();
+		ImGui::EndTabItem();
+		ImGui::EndTabBar();
+	}
+	ImGui::NextColumn();
+	{
+		if (ImGui::BeginCombo("", "Add Effect"))
+		{
+			for (int i = 0; i < effectCount; i++)
+			{
+				if (ImGui::Selectable(effectNames[i]))
+				{
+					AddEffect(i);
+				}
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::Separator();
+		ImGui::Text("Effects");
+		ImGui::BeginListBox("", {displaySize.x * 0.2f, -10.0f});
+
+		for (int e = 0; e < effects.size(); e++)
+		{
+			ImGui::BeginChild("EffectButton");
+			ImGui::Columns(3);
+			ImGui::SetColumnWidth(0, ImGui::GetWindowSize().x * 0.65);
+			ImGui::SetColumnWidth(1, ImGui::GetWindowSize().x * 0.125);
+			ImGui::SetColumnWidth(2, ImGui::GetWindowSize().x * 0.125);
+			ImGui::Selectable(effects[e].c_str());
+			ImGui::NextColumn();
+			ImGui::ArrowButton("MoveEffectUp", ImGuiDir_Up);
+			ImGui::NextColumn();
+			ImGui::ArrowButton("MoveEffectDown", ImGuiDir_Down);
+			ImGui::EndChild();
+		}
+
+		ImGui::EndListBox();
+	}
 	ImGui::EndChild();
 
 	ImGui::End();
@@ -96,6 +145,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	// Connect IMGUI to GLFW/OpenGL renderer
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 130");
+
+	// Load OpenSans font
+	ImGuiIO& io = ImGui::GetIO();
+	io.Fonts->AddFontFromFileTTF("OpenSans-Regular.ttf", 18.0f);
 
 	// Render loop
 	while (!glfwWindowShouldClose(window))
