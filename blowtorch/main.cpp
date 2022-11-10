@@ -62,10 +62,14 @@ void RenderGUI(int width, int height)
 	ImGui::SetColumnWidth(1, displaySize.x * 0.2f);
 	{
 		ImGui::BeginTabBar("EditorTabs");
-		ImGui::BeginTabItem("cowboy_sunglasses.png*");
-
-
-		ImGui::EndTabItem();
+		if (ImGui::BeginTabItem("cowboy_sunglasses.png*"))
+		{
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("WIN_20220828_22_03_08_Pro.jpg"))
+		{
+			ImGui::EndTabItem();
+		}
 		ImGui::EndTabBar();
 	}
 	ImGui::NextColumn();
