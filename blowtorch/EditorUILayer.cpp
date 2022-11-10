@@ -16,8 +16,15 @@ const char* effectNames[effectCount] = {
 	"Pixelate",
 	"Bitshift"
 };
+bool isBkgColorEditorOpen = false;
 
-EditorUILayer::EditorUILayer(GLFWwindow* window) : UILayer(window), _effects(), _preview(0) {}
+EditorUILayer::EditorUILayer(GLFWwindow* window) : UILayer(window), _effects(), _preview(0)
+{
+	// Set disabled alpha
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.DisabledAlpha = 1.0f;
+}
+
 EditorUILayer::~EditorUILayer()
 {
 
@@ -26,6 +33,7 @@ EditorUILayer::~EditorUILayer()
 void EditorUILayer::AttachPreviewLayer(PreviewLayer* prevLayer)
 {
 	_preview = prevLayer->GetTextureID();
+	_previewBkgColor = prevLayer->_bkgColor;
 }
 
 void EditorUILayer::DrawMenuBar()
@@ -87,7 +95,10 @@ void EditorUILayer::DrawEffects(ImVec2& displaySize)
 		ImGui::SetColumnWidth(2, ImGui::GetWindowSize().x * 0.125);
 		ImGui::SetColumnWidth(3, ImGui::GetWindowSize().x * 0.125);
 		// Effect Name / Button
-		ImGui::Selectable((*it).c_str());
+		if (ImGui::Selectable((*it).c_str()))
+		{
+			isBkgColorEditorOpen = true;
+		}
 		ImGui::NextColumn();
 		// Move Effect Up
 		ImGui::ArrowButton("MoveEffectUp", ImGuiDir_Up);
@@ -115,10 +126,13 @@ void EditorUILayer::RenderGUI()
 {
 	auto& displaySize = ImGui::GetIO().DisplaySize;
 
+	// Disable main window if modal
+	ImGui::BeginDisabled(isBkgColorEditorOpen);
+
 	// DRAW FULL-SCREEN WINDOW
 	ImGui::SetNextWindowSize(displaySize);
 	ImGui::SetNextWindowPos({ 0, 0 });
-	ImGui::Begin("##", nullptr, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDecoration);
+	ImGui::Begin("##", nullptr, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
 	// DRAW MENU BAR
 	DrawMenuBar();
@@ -138,4 +152,14 @@ void EditorUILayer::RenderGUI()
 	ImGui::EndChild();
 
 	ImGui::End();
+
+	ImGui::EndDisabled();
+
+	// Draw background color editor
+	if (isBkgColorEditorOpen)
+	{
+		ImGui::Begin("Preview Editor", &isBkgColorEditorOpen, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize);
+		ImGui::ColorEdit4("Background Color", _previewBkgColor);
+		ImGui::End();
+	}
 }

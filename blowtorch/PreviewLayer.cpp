@@ -5,6 +5,11 @@
 
 PreviewLayer::PreviewLayer(GLFWwindow* window, int resolutionX, int resolutionY) : _window(window)
 {
+	// Set starting bkgColor
+	_bkgColor[0] = 1.0f;
+	_bkgColor[1] = 0.0f;
+	_bkgColor[2] = 0.0f;
+
 	// Set GL Context
 	glfwMakeContextCurrent(_window);
 
@@ -35,7 +40,7 @@ void PreviewLayer::Render()
 	glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
 
 	// Clear color
-	glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(_bkgColor[0], _bkgColor[1], _bkgColor[2], 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	// Detach FBO

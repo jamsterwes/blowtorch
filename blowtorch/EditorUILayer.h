@@ -22,4 +22,5 @@ protected:
 private:
 	std::vector<std::string> _effects;
 	unsigned int _preview;
+	float* _previewBkgColor;
 };
