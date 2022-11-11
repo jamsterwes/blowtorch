@@ -30,6 +30,9 @@ EditorUILayer::EditorUILayer(GLFWwindow* window) : UILayer(window), _effects(), 
 	_editorBkgColor[1] = 0.5f;
 	_editorBkgColor[2] = 0.5f;
 	_editorBkgColor[3] = 1.0f;
+
+	// Set font
+	_currentFont = 1;
 }
 
 EditorUILayer::~EditorUILayer()
@@ -57,6 +60,24 @@ void EditorUILayer::DrawMenuBar()
 	}
 	if (ImGui::BeginMenu("View"))
 	{
+		const char* label = _currentFont == 0 ? "14pt" : (_currentFont == 1 ? "18pt" : "22pt");
+		if (ImGui::BeginCombo("Font Size", label))
+		{
+			if (ImGui::Selectable("14pt", _currentFont == 0))
+			{
+				_currentFont = 0;
+			}
+			if (ImGui::Selectable("18pt", _currentFont == 1))
+			{
+				_currentFont = 1;
+			}
+			if (ImGui::Selectable("22pt", _currentFont == 2))
+			{
+				_currentFont = 2;
+			}
+			ImGui::EndCombo();
+		}
+
 		ImGui::ColorEdit4("Background Color", _editorBkgColor, ImGuiColorEditFlags_NoInputs);
 		ImGui::EndMenu();
 	}
@@ -143,6 +164,9 @@ void EditorUILayer::RenderGUI()
 {
 	auto& displaySize = ImGui::GetIO().DisplaySize;
 
+	// Push font
+	ImGui::PushFont(_font[_currentFont]);
+
 	// Disable main window if modal
 	ImGui::BeginDisabled(isBkgColorEditorOpen);
 
@@ -179,4 +203,7 @@ void EditorUILayer::RenderGUI()
 		ImGui::ColorEdit4("Background Color", _previewBkgColor);
 		ImGui::End();
 	}
+
+	// Pop font
+	ImGui::PopFont();
 }

@@ -26,4 +26,5 @@ private:
 	unsigned int _preview;
 	float* _previewBkgColor;
 	float _editorBkgColor[4];
+	int _currentFont;
 };

@@ -10,4 +10,6 @@ public:
 protected:
 	struct ImGuiContext* ctx;
 	virtual void RenderGUI() = 0;
+
+	struct ImFont* _font[3];
 };
