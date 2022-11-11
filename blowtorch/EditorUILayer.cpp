@@ -24,6 +24,12 @@ EditorUILayer::EditorUILayer(GLFWwindow* window) : UILayer(window), _effects(), 
 	// Set disabled alpha
 	ImGuiStyle& style = ImGui::GetStyle();
 	style.DisabledAlpha = 1.0f;
+
+	// Initialize the (sorta) editor background color
+	_editorBkgColor[0] = 0.5f;
+	_editorBkgColor[1] = 0.5f;
+	_editorBkgColor[2] = 0.5f;
+	_editorBkgColor[3] = 1.0f;
 }
 
 EditorUILayer::~EditorUILayer()
@@ -47,6 +53,11 @@ void EditorUILayer::DrawMenuBar()
 			// Open Image
 			// TODO: open file prompt
 		}
+		ImGui::EndMenu();
+	}
+	if (ImGui::BeginMenu("View"))
+	{
+		ImGui::ColorEdit4("Background Color", _editorBkgColor, ImGuiColorEditFlags_NoInputs);
 		ImGui::EndMenu();
 	}
 	ImGui::EndMenuBar();
@@ -121,6 +132,11 @@ void EditorUILayer::DrawEffects(ImVec2& displaySize)
 void EditorUILayer::AddEffect(int i)
 {
 	_effects.push_back(effectNames[i]);
+}
+
+const float* EditorUILayer::GetEditorBKGColor() const
+{
+	return _editorBkgColor;
 }
 
 void EditorUILayer::RenderGUI()

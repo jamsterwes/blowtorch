@@ -54,10 +54,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	euiLayer->AttachPreviewLayer(prevLayer);
 
 	// Render loop
+	const float* bkgColor = euiLayer->GetEditorBKGColor();
 	while (!glfwWindowShouldClose(window))
 	{
 		// Set background color
-		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+		glClearColor(bkgColor[0], bkgColor[1], bkgColor[2], 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		prevLayer->Render();

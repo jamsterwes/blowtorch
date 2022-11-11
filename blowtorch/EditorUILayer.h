@@ -11,6 +11,8 @@ public:
 	~EditorUILayer();
 
 	void AttachPreviewLayer(class PreviewLayer* prevLayer);
+
+	const float* GetEditorBKGColor() const;
 private:
 	void DrawMenuBar();
 	void DrawEditor();
@@ -23,4 +25,5 @@ private:
 	std::vector<std::string> _effects;
 	unsigned int _preview;
 	float* _previewBkgColor;
+	float _editorBkgColor[4];
 };
