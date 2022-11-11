@@ -14,6 +14,13 @@ Effect::Effect(std::string name, std::string fragPath) : _name(name)
 	_prog = loadProgram(fragPath);
 }
 
+// TODO: Destructor
+
+const unsigned int Effect::GetProgram()
+{
+	return _prog;
+}
+
 unsigned int Effect::loadShader(int shaderType, std::string shaderSource)
 {
 	// Create shader

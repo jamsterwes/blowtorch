@@ -7,6 +7,7 @@ public:
 	Effect(std::string name, std::string fragPath);
 
 	virtual void DrawEditor() = 0;
+	const unsigned int GetProgram();
 
 	static bool FXDrawerOpen;
 private:

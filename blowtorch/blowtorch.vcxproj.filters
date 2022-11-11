@@ -19,6 +19,12 @@
     <Filter Include="Source Files\imgui">
       <UniqueIdentifier>{ba3767ea-5f83-4c52-bcbc-f546d1faae0c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\imnodes">
+      <UniqueIdentifier>{2287af09-a0ae-44b1-949e-0ab907f5abe8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\imnodes">
+      <UniqueIdentifier>{20bbf40d-1bb3-4426-aa5d-8fb4ef4eb1bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -41,6 +47,9 @@
     </ClCompile>
     <ClCompile Include="Effect.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imnodes\imnodes.cpp">
+      <Filter>Source Files\imnodes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +76,12 @@
     </ClInclude>
     <ClInclude Include="Effect.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imnodes\imnodes.h">
+      <Filter>Header Files\imnodes</Filter>
+    </ClInclude>
+    <ClInclude Include="imnodes\imnodes_internal.h">
+      <Filter>Header Files\imnodes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
