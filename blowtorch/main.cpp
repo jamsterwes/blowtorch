@@ -50,7 +50,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	EditorUILayer* euiLayer = new EditorUILayer(window);
 
 	// Init PreviewLayer
-	PreviewLayer* prevLayer = new PreviewLayer(window, "images/cowboy_sunglasses.png", 512, 512);
+	PreviewLayer* prevLayer = new PreviewLayer(window, "images/cowboy_sunglasses.png", 1024, 1024);
 	euiLayer->AttachPreviewLayer(prevLayer);
 
 	// Render loop
