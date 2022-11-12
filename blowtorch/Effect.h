@@ -14,6 +14,6 @@ private:
 	std::string _name;
 	unsigned int _prog, _fbo, _tex;
 
-	unsigned int loadShader(int shaderType, std::string shaderSource);
+	unsigned int loadShader(int shaderType, std::string shaderPath);
 	unsigned int loadProgram(std::string fragPath);
 };

@@ -1,6 +1,10 @@
 #include "Effect.h"
 
 #include <glad/glad.h>
+#include <stdio.h>
+
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 
 // To be lazy-loaded
 static unsigned int vertShader = 0;
@@ -38,20 +42,42 @@ const unsigned int Effect::GetProgram()
 	return _prog;
 }
 
-unsigned int Effect::loadShader(int shaderType, std::string shaderSource)
+unsigned int Effect::loadShader(int shaderType, std::string shaderPath)
 {
 	// Create shader
 	unsigned int shader = glCreateShader(shaderType);
 
+	// Get shader source
+	FILE* f = nullptr;
+	fopen_s(&f, shaderPath.c_str(), "r");
+	if (!f)
+	{
+		MessageBoxA(nullptr, "Failed to open shader", "Error", MB_OK | MB_ICONERROR);
+	}
+	fseek(f, 0, SEEK_END);
+	int size = ftell(f);
+	char* shaderSource = new char[size+1];
+	rewind(f);
+	fread(shaderSource, sizeof(char), size, f);
+	shaderSource[size] = '\0';
+	fclose(f);
+
 	// Buffer shader source
-	const char* source_cstr = shaderSource.c_str();
-	int source_len = shaderSource.length();
-	glShaderSource(shader, 1, &source_cstr, &source_len);
+	glShaderSource(shader, 1, &shaderSource, &size);
+	delete[] shaderSource;
 
 	// Compile shader
 	glCompileShader(shader);
 
-	// TODO: error checking
+	// TODO: error checkingGLint status;
+	int success;
+	char infoLog[512];
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(shader, 512, NULL, infoLog);
+		MessageBoxA(nullptr, infoLog, "Error", MB_OK | MB_ICONERROR);
+	}
 
 	return shader;
 }
@@ -73,6 +99,10 @@ unsigned int Effect::loadProgram(std::string fragPath)
 	// Attach shaders
 	glAttachShader(program, vertShader);
 	glAttachShader(program, fragShader);
+
+	// Attach inputs
+	glBindAttribLocation(program, 0, "in_pos");
+	glBindAttribLocation(program, 1, "in_uv");
 
 	// Link program
 	glLinkProgram(program);

@@ -1,4 +1,5 @@
 #include "PreviewLayer.h"
+#include "Effect.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -73,6 +74,9 @@ PreviewLayer::PreviewLayer(GLFWwindow* window, const char* imageSrc, int resolut
 
 	// Unbind VAO
 	glBindVertexArray(0);
+
+	// Create Effect
+	_img = new Effect("Image", "shaders/img.frag", resolutionX, resolutionY);
 }
 
 void PreviewLayer::Render()
@@ -89,6 +93,9 @@ void PreviewLayer::Render()
 
 	// Draw image
 	glBindVertexArray(vao);
+	glUseProgram(_img->GetProgram());
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _imageTex);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, 0);
 
 	// Detach FBO

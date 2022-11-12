@@ -13,4 +13,6 @@ private:
 	struct GLFWwindow* _window;
 	unsigned int _fbo, _tex;
 	unsigned int _imageTex;
+	// TODO: TEMPORARY, PLEASE REMOVE
+	class Effect* _img;
 };
