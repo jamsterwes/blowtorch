@@ -3,7 +3,7 @@
 class PreviewLayer
 {
 public:
-	PreviewLayer(struct GLFWwindow* _window, int resolutionX, int resolutionY);
+	PreviewLayer(struct GLFWwindow* window, const char* imageSrc, int resolutionX, int resolutionY);
 
 	void Render();
 	const unsigned int GetTextureID() const;
@@ -12,4 +12,5 @@ public:
 private:
 	struct GLFWwindow* _window;
 	unsigned int _fbo, _tex;
+	unsigned int _imageTex;
 };

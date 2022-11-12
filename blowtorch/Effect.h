@@ -4,15 +4,15 @@
 class Effect
 {
 public:
-	Effect(std::string name, std::string fragPath);
+	Effect(std::string name, std::string fragPath, int width, int height);
 
-	virtual void DrawEditor() = 0;
+	virtual void DrawEditor() {};
 	const unsigned int GetProgram();
 
 	static bool FXDrawerOpen;
 private:
 	std::string _name;
-	unsigned int _prog;
+	unsigned int _prog, _fbo, _tex;
 
 	unsigned int loadShader(int shaderType, std::string shaderSource);
 	unsigned int loadProgram(std::string fragPath);

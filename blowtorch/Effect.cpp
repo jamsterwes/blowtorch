@@ -9,9 +9,26 @@ const char* vertPath = "shaders/img.vert";
 // Keep track of FX drawer open or not
 bool Effect::FXDrawerOpen = false;
 
-Effect::Effect(std::string name, std::string fragPath) : _name(name)
+Effect::Effect(std::string name, std::string fragPath, int resolutionX, int resolutionY) : _name(name)
 {
 	_prog = loadProgram(fragPath);
+
+	// Generate FBO
+	glGenFramebuffers(1, &_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+
+	// Generate texture (color buffer)
+	glGenTextures(1, &_tex);
+	glBindTexture(GL_TEXTURE_2D, _tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, resolutionX, resolutionY, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// Attach color buffer to FBO
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _tex, 0);
+
+	// Detach FBO
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 // TODO: Destructor

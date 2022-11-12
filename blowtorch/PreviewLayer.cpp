@@ -3,7 +3,23 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-PreviewLayer::PreviewLayer(GLFWwindow* window, int resolutionX, int resolutionY) : _window(window)
+#include <SOIL2/SOIL2.h>
+
+const float quad[4 * 4] = {
+	-1.0f, -1.0f, 0.0f, 0.0f,
+	-1.0f, 1.0f, 0.0f, 1.0f,
+	1.0f, -1.0f, 1.0f, 0.0f,
+	1.0f, 1.0f, 1.0f, 1.0f,
+};
+
+const unsigned char quadi[6] = {
+	0, 2, 1,
+	3, 1, 2
+};
+
+unsigned int vbo, ebo, vao;
+
+PreviewLayer::PreviewLayer(GLFWwindow* window, const char* imageSrc, int resolutionX, int resolutionY) : _window(window)
 {
 	// Set starting bkgColor
 	_bkgColor[0] = 1.0f;
@@ -29,6 +45,34 @@ PreviewLayer::PreviewLayer(GLFWwindow* window, int resolutionX, int resolutionY)
 
 	// Detach FBO
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// Load image
+	int width, height, channels;
+	const unsigned char* data = SOIL_load_image(imageSrc, &width, &height, &channels, 4);
+	_imageTex = SOIL_create_OGL_texture(data, &width, &height, 4, 0, SOIL_FLAG_INVERT_Y);
+
+	// Generate VAO
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	// Generate VBO
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 4, quad, GL_STATIC_DRAW);
+
+	// Generate EBO
+	glGenBuffers(1, &ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned char) * 6, quadi, GL_STATIC_DRAW);
+
+	// Set vertex attribs
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(0, 2, GL_FLOAT, false, 4 * sizeof(float), 0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, false, 4 * sizeof(float), (const void*)(2 * sizeof(float)));
+
+	// Unbind VAO
+	glBindVertexArray(0);
 }
 
 void PreviewLayer::Render()
@@ -42,6 +86,10 @@ void PreviewLayer::Render()
 	// Clear color
 	glClearColor(_bkgColor[0], _bkgColor[1], _bkgColor[2], 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	// Draw image
+	glBindVertexArray(vao);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, 0);
 
 	// Detach FBO
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
