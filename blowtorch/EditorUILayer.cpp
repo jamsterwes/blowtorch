@@ -93,7 +93,11 @@ void EditorUILayer::DrawEditor()
 	ImGui::BeginTabBar("EditorTabs");
 	if (ImGui::BeginTabItem(ICON_FA_PICTURE_O " cowboy_sunglasses.png*"))
 	{
-		ImGui::Image((void*)_preview, { 512, 512 });
+		// Calculate size
+		ImVec2 bounds = ImGui::GetWindowContentRegionMax();
+		float size = bounds.x < bounds.y ? bounds.x : bounds.y;
+
+		ImGui::Image((void*)_preview, { size - 50, size - 50 });
 		ImGui::EndTabItem();
 	}
 	if (ImGui::BeginTabItem(ICON_FA_PICTURE_O " WIN_20220828_22_03_08_Pro.jpg"))
