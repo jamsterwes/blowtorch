@@ -8,6 +8,7 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "imgui/imgui_fonts.h"
+#include "imnodes/imnodes.h"
 
 // Initialization
 UILayer::UILayer(GLFWwindow* window)
@@ -15,6 +16,9 @@ UILayer::UILayer(GLFWwindow* window)
 	// Init IMGUI
 	ctx = ImGui::CreateContext();
 	ImGui::SetCurrentContext(ctx);
+
+	// Init ImNodes
+	ImNodes::CreateContext();
 
 	// Connect IMGUI to GLFW/OpenGL renderer
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -44,6 +48,9 @@ UILayer::~UILayer()
 	// Shutdown
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
+
+	// Destroy ImNodes
+	ImNodes::DestroyContext();
 
 	// Destroy context
 	ImGui::DestroyContext(ctx);

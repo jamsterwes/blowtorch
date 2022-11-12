@@ -27,4 +27,7 @@ private:
 	float* _previewBkgColor;
 	float _editorBkgColor[4];
 	int _currentFont;
+	bool _drawMinimap;
+	std::vector<std::pair<int, int>> _links;
+	double _blurRadius;
 };

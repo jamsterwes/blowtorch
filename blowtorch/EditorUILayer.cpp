@@ -9,6 +9,7 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "imgui/imgui_fonts.h"
+#include "imnodes/imnodes.h"
 
 const size_t effectCount = 4;
 const char* effectNames[effectCount] = {
@@ -19,7 +20,7 @@ const char* effectNames[effectCount] = {
 };
 bool isBkgColorEditorOpen = false;
 
-EditorUILayer::EditorUILayer(GLFWwindow* window) : UILayer(window), _effects(), _preview(0)
+EditorUILayer::EditorUILayer(GLFWwindow* window) : UILayer(window), _effects(), _preview(0), _drawMinimap(false), _links()
 {
 	// Set disabled alpha
 	ImGuiStyle& style = ImGui::GetStyle();
@@ -79,6 +80,9 @@ void EditorUILayer::DrawMenuBar()
 		}
 
 		ImGui::ColorEdit4("Background Color", _editorBkgColor, ImGuiColorEditFlags_NoInputs);
+
+		ImGui::Checkbox("Show Minimap (Node Editor)", &_drawMinimap);
+
 		ImGui::EndMenu();
 	}
 	ImGui::EndMenuBar();
@@ -94,6 +98,95 @@ void EditorUILayer::DrawEditor()
 	}
 	if (ImGui::BeginTabItem(ICON_FA_PICTURE_O " WIN_20220828_22_03_08_Pro.jpg"))
 	{
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem(ICON_FA_OBJECT_GROUP " Repaint.bfx*"))
+	{
+		ImNodes::BeginNodeEditor();
+
+		ImNodes::BeginNode(1);
+
+		ImNodes::BeginNodeTitleBar();
+		ImGui::TextUnformatted("Input");
+		ImNodes::EndNodeTitleBar();
+
+		ImNodes::BeginOutputAttribute(2);
+		ImGui::Text(ICON_FA_PICTURE_O " Source (RGBA)");
+		ImNodes::EndOutputAttribute();
+
+		ImGui::Image((void*)_preview, { 64, 64 });
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::BeginTooltip();
+			ImGui::Text("Large Preview");
+			ImGui::Image((void*)_preview, { 256, 256 });
+			ImGui::EndTooltip();
+		}
+
+		ImNodes::EndNode();
+
+		ImNodes::BeginNode(6);
+
+		ImNodes::BeginNodeTitleBar();
+		ImGui::TextUnformatted("Blur");
+		ImNodes::EndNodeTitleBar();
+
+
+		ImNodes::BeginInputAttribute(7);
+		ImGui::Text(ICON_FA_PICTURE_O " Input (RGBA)");
+		ImNodes::EndInputAttribute();
+
+		ImNodes::BeginOutputAttribute(8);
+		ImGui::Text(ICON_FA_PICTURE_O " Output (RGBA)");
+		ImNodes::EndOutputAttribute();
+
+		ImGui::PushItemWidth(64);
+		ImGui::InputDouble("Blur Radius", &_blurRadius, 0.0, 0.0, "%.2f px");
+		ImGui::PopItemWidth();
+
+		ImNodes::EndNode();
+
+		ImNodes::BeginNode(3);
+
+		ImNodes::BeginNodeTitleBar();
+		ImGui::TextUnformatted("Output");
+		ImNodes::EndNodeTitleBar();
+
+		ImNodes::BeginInputAttribute(4);
+		ImGui::Text(ICON_FA_PICTURE_O " Finished (RGBA)");
+		ImNodes::EndInputAttribute();
+
+
+		ImGui::Image((void*)_preview, { 64, 64 });
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::BeginTooltip();
+			ImGui::Text("Large Preview");
+			ImGui::Image((void*)_preview, { 256, 256 });
+			ImGui::EndTooltip();
+		}
+
+		ImNodes::EndNode();
+
+		for (int i = 0; i < _links.size(); ++i)
+		{
+			const std::pair<int, int> p = _links[i];
+			// in this case, we just use the array index of the link
+			// as the unique identifier
+			ImNodes::Link(i, p.first, p.second);
+		}
+
+		if (_drawMinimap) ImNodes::MiniMap();
+
+
+		ImNodes::EndNodeEditor();
+
+		int start_attr, end_attr;
+		if (ImNodes::IsLinkCreated(&start_attr, &end_attr))
+		{
+			_links.push_back(std::make_pair(start_attr, end_attr));
+		}
+
 		ImGui::EndTabItem();
 	}
 	ImGui::EndTabBar();
