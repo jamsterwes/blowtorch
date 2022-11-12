@@ -62,6 +62,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		prevLayer->Render();
+
+		// TODO: move this
+		glViewport(0, 0, width, height);
 		euiLayer->Render();
 
 		glfwSwapBuffers(window);

@@ -58,7 +58,7 @@ unsigned int Effect::loadShader(int shaderType, std::string shaderPath)
 	int size = ftell(f);
 	char* shaderSource = new char[size+1];
 	rewind(f);
-	fread(shaderSource, sizeof(char), size, f);
+	size = fread_s(shaderSource, sizeof(char) * (size + 1), sizeof(char), size, f);
 	shaderSource[size] = '\0';
 	fclose(f);
 

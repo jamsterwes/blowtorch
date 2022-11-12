@@ -15,4 +15,6 @@ private:
 	unsigned int _imageTex;
 	// TODO: TEMPORARY, PLEASE REMOVE
 	class Effect* _img;
+
+	int _resolutionX, _resolutionY;
 };

@@ -20,7 +20,7 @@ const unsigned char quadi[6] = {
 
 unsigned int vbo, ebo, vao;
 
-PreviewLayer::PreviewLayer(GLFWwindow* window, const char* imageSrc, int resolutionX, int resolutionY) : _window(window)
+PreviewLayer::PreviewLayer(GLFWwindow* window, const char* imageSrc, int resolutionX, int resolutionY) : _window(window), _resolutionX(resolutionX), _resolutionY(resolutionY)
 {
 	// Set starting bkgColor
 	_bkgColor[0] = 1.0f;
@@ -50,7 +50,7 @@ PreviewLayer::PreviewLayer(GLFWwindow* window, const char* imageSrc, int resolut
 	// Load image
 	int width, height, channels;
 	const unsigned char* data = SOIL_load_image(imageSrc, &width, &height, &channels, 4);
-	_imageTex = SOIL_create_OGL_texture(data, &width, &height, 4, 0, SOIL_FLAG_INVERT_Y);
+	_imageTex = SOIL_create_OGL_texture(data, &width, &height, 4, 0, 0);
 
 	// Generate VAO
 	glGenVertexArrays(1, &vao);
@@ -92,6 +92,7 @@ void PreviewLayer::Render()
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	// Draw image
+	glViewport(0, 0, _resolutionX, _resolutionY);
 	glBindVertexArray(vao);
 	glUseProgram(_img->GetProgram());
 	glActiveTexture(GL_TEXTURE0);
