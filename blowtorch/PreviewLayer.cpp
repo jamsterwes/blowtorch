@@ -20,6 +20,8 @@ const unsigned char quadi[6] = {
 
 unsigned int vbo, ebo, vao;
 
+float SHADER_crystalSize, SHADER_range, SHADER_shift;
+
 PreviewLayer::PreviewLayer(GLFWwindow* window, const char* imageSrc, int resolutionX, int resolutionY) : _window(window), _resolutionX(resolutionX), _resolutionY(resolutionY)
 {
 	// Set starting bkgColor
@@ -95,6 +97,12 @@ void PreviewLayer::Render()
 	glViewport(0, 0, _resolutionX, _resolutionY);
 	glBindVertexArray(vao);
 	glUseProgram(_img->GetProgram());
+
+	glUniform2i(glGetUniformLocation(_img->GetProgram(), "resolution"), _resolutionX, _resolutionY);
+	glUniform1f(glGetUniformLocation(_img->GetProgram(), "crystalSize"), SHADER_crystalSize);
+	glUniform1f(glGetUniformLocation(_img->GetProgram(), "range"), SHADER_range);
+	glUniform1f(glGetUniformLocation(_img->GetProgram(), "shift"), SHADER_shift);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, _imageTex);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, 0);

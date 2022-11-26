@@ -20,6 +20,8 @@ const char* effectNames[effectCount] = {
 };
 bool isBkgColorEditorOpen = false;
 
+extern float SHADER_crystalSize, SHADER_range, SHADER_shift;
+
 EditorUILayer::EditorUILayer(GLFWwindow* window) : UILayer(window), _effects(), _preview(0), _drawMinimap(false), _links()
 {
 	// Set disabled alpha
@@ -100,10 +102,10 @@ void EditorUILayer::DrawEditor()
 		ImGui::Image((void*)_preview, { size - 50, size - 50 });
 		ImGui::EndTabItem();
 	}
-	if (ImGui::BeginTabItem(ICON_FA_PICTURE_O " WIN_20220828_22_03_08_Pro.jpg"))
-	{
-		ImGui::EndTabItem();
-	}
+	//if (ImGui::BeginTabItem(ICON_FA_PICTURE_O " WIN_20220828_22_03_08_Pro.jpg"))
+	//{
+	//	ImGui::EndTabItem();
+	//}
 	if (ImGui::BeginTabItem(ICON_FA_OBJECT_GROUP " Repaint.bfx*"))
 	{
 		ImNodes::BeginNodeEditor();
@@ -132,7 +134,7 @@ void EditorUILayer::DrawEditor()
 		ImNodes::BeginNode(6);
 
 		ImNodes::BeginNodeTitleBar();
-		ImGui::TextUnformatted("Blur");
+		ImGui::TextUnformatted("Crystal");
 		ImNodes::EndNodeTitleBar();
 
 
@@ -145,7 +147,9 @@ void EditorUILayer::DrawEditor()
 		ImNodes::EndOutputAttribute();
 
 		ImGui::PushItemWidth(64);
-		ImGui::InputDouble("Blur Radius", &_blurRadius, 0.0, 0.0, "%.2f px");
+		ImGui::DragFloat("Crystal Size", &SHADER_crystalSize, 0.25, 1.0, 1024.0, "%.2f px");
+		ImGui::DragFloat("Hue Pre-Shift", &SHADER_shift, 0.05, -6.28, 6.28, "%.2fdeg");
+		ImGui::DragFloat("Hue Remap Range", &SHADER_range, 0.05, 0.0, 32.0, "%.2fdeg");
 		ImGui::PopItemWidth();
 
 		ImNodes::EndNode();
@@ -161,12 +165,12 @@ void EditorUILayer::DrawEditor()
 		ImNodes::EndInputAttribute();
 
 
-		ImGui::Image((void*)_preview, { 64, 64 });
+		ImGui::Image((void*)_preview, { 256, 256 });
 		if (ImGui::IsItemHovered())
 		{
 			ImGui::BeginTooltip();
 			ImGui::Text("Large Preview");
-			ImGui::Image((void*)_preview, { 256, 256 });
+			ImGui::Image((void*)_preview, { 512, 512 });
 			ImGui::EndTooltip();
 		}
 
@@ -184,6 +188,33 @@ void EditorUILayer::DrawEditor()
 
 
 		ImNodes::EndNodeEditor();
+
+		if (ImNodes::IsEditorHovered() && ImGui::IsMouseClicked(1))
+		{
+			ImGui::CloseCurrentPopup();
+			ImGui::OpenPopup("NewNodePopup");
+		}
+
+		if (ImGui::BeginPopup("NewNodePopup"))
+		{
+			ImGui::Text("New Node");
+			ImGui::Separator();
+			if (ImGui::TreeNode(ICON_FA_FOLDER " Basic"))
+			{
+				ImGui::Selectable("Brightness/Contrast");
+				ImGui::Selectable("Hue Shift");
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNode(ICON_FA_FOLDER " Color"))
+			{
+				ImGui::Selectable("Wave");
+				ImGui::Selectable("Band");
+				ImGui::Selectable("Gradient Map");
+				ImGui::TreePop();
+			}
+			ImGui::Selectable("Blend");
+			ImGui::EndPopup();
+		}
 
 		int start_attr, end_attr;
 		if (ImNodes::IsLinkCreated(&start_attr, &end_attr))
